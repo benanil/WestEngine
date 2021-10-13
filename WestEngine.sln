@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31424.327
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WestEngine", "WestEngine\WestEngine.vcxproj", "{A9ED5C9F-2746-4930-88CE-73C4BCE06F30}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SandBox", "SandBox\SandBox.vcxproj", "{EC924B7F-EBE3-4A8A-9E01-E7B0A3ACC620}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A9ED5C9F-2746-4930-88CE-73C4BCE06F30}.Debug|x64.ActiveCfg = Debug|x64
+		{A9ED5C9F-2746-4930-88CE-73C4BCE06F30}.Debug|x64.Build.0 = Debug|x64
+		{A9ED5C9F-2746-4930-88CE-73C4BCE06F30}.Release|x64.ActiveCfg = Release|x64
+		{A9ED5C9F-2746-4930-88CE-73C4BCE06F30}.Release|x64.Build.0 = Release|x64
+		{EC924B7F-EBE3-4A8A-9E01-E7B0A3ACC620}.Debug|x64.ActiveCfg = Debug|x64
+		{EC924B7F-EBE3-4A8A-9E01-E7B0A3ACC620}.Debug|x64.Build.0 = Debug|x64
+		{EC924B7F-EBE3-4A8A-9E01-E7B0A3ACC620}.Release|x64.ActiveCfg = Release|x64
+		{EC924B7F-EBE3-4A8A-9E01-E7B0A3ACC620}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {51522F72-6E79-4548-AD43-F63F8D5B21DD}
+	EndGlobalSection
+EndGlobal
