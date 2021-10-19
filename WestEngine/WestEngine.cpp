@@ -1,138 +1,142 @@
 #include "WestEngine.h"
-#include "Editor.h"
-#include "Camera.h"
-#include "Common.h"
-#include <Shader.h>
-#include <Input.h>
-#include <Mesh.h>
-
 #include <iostream>
 #include "GLFW/glfw3.h"
 #include "glad.h"
-#include "SOIL/SOIL.h";
-#include <filesystem>
-#include <Texture.h>
-
-// #include "assimp/scene.h"
-// #include <assimp/Importer.hpp>  
-// #include <assimp/scene.h>       
-// #include <assimp/postprocess.h> 
+#include "glm/glm.hpp"
+#include "imgui/imgui.h"
+#include <vector>
 
 namespace WestEngine
 {
-    static void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+    static void mouse_callback(GLFWwindow* window, double xpos, double ypos);
+	static void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 	static void MainInput(GLFWwindow* window);
+    static void FocusCallback(GLFWwindow* window, int enter);
+    static void MainEditor();
 
-	void Engine::Run()
+	int Engine::WindowWidth = 1200;
+	int Engine::WindowHeight = 720;
+    Event  Engine::OnUpdate;
+    Event  Engine::OnEditor;
+    Eventi Engine::OnFocus;
+    
+    static Camera SceneCamera;
+
+    void Engine::Run()
 	{
-		if (glfwInit() == 0)  std::cout << "glfw failed" << std::endl;
+        glfwInit();
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 4);
+        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 4);
+#ifdef __APPLE__
+        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+#endif
+        // glfw window creation
+        GLFWwindow* window = glfwCreateWindow(Engine::WindowWidth, Engine::WindowHeight, "West Engine", NULL, NULL);
+        if (window == NULL) {
+            std::cout << "Failed to create GLFW window" << std::endl;
+            glfwTerminate();
+        }
+        glfwMakeContextCurrent(window);
+        glfwSwapInterval(1);
 
-		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-		GLFWwindow* window = glfwCreateWindow(900, 900, "West Engine", NULL, NULL);
-		glfwMakeContextCurrent(window);
-		glfwSwapInterval(1);
+        // initialize callbacks
+        glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+        glfwSetCursorPosCallback(window, mouse_callback);
+        glfwSetWindowFocusCallback(window, FocusCallback);
 
-		if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-			std::cout << "Failed to initialize GLAD" << std::endl;
-		}
+        if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) std::cout << "Failed to initialize GLAD" << std::endl;
 
-		//Creates Imgui functions
-		Editor::Create(window);
-		Input::Initialize(window);
+        glEnable(GL_DEPTH_TEST);
 
-		glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+        Editor::Create(window);
+        Input::Initialize(window);
+        Device::Create();
+        Editor::AddOnEditor(MainEditor);
+
+        Shader ourShader("First.vert", "First.frag");
+        ourShader.Bind();
+        glm::mat4 model(1.0f);
+        model = glm::rotate(model, -1.57f, glm::vec3(1.0f, 0.0f, 0.0f));
+        ourShader.setMat4("model", model);
+
+        Texture texture(true, "map_Base_Colorenyeni.png");
         
-		Shader shader(std::string("Assets\\First.vert"), std::string("Assets\\First.frag"));
+        int meshCount = 0;
+        Mesh* mesh = MeshLoader::Load(Helper::AssetsPath().append("map.fbx").u8string(), meshCount);
 
-        float vertices[] = {
-             1,  1,  0,  0,  // top right
-             1, -1,  0,  1,  // bottom right
-            -1, -1,  1,  1,  // bottom left
-            -1,  1,  1,  0  // top left 
-        };
+        SceneCamera = Camera(glm::vec3(0,0,0));
 
-        unsigned int indices[] = {  // note that we start from 0!
-            0, 1, 3,  // first Triangle
-            1, 2, 3   // second Triangle
-        };
+        float currentTime = 0, lastTime = 0;
 
-        unsigned int VBO, VAO, EBO, TEBO;
-        glGenVertexArrays(1, &VAO);
-        glGenBuffers(1, &VBO);
-        glGenBuffers(1, &EBO);
-		glGenBuffers(1, &TEBO);
-		glBindVertexArray(VAO);
-
-        glBindBuffer(GL_ARRAY_BUFFER, VBO);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-        glVertexAttribPointer(0, 2, GL_FLOAT, GL_TRUE, sizeof(float) * 4, (void*)0);
-
-		glBindBuffer(GL_ARRAY_BUFFER, TEBO);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-		glVertexAttribPointer(1, 2, GL_FLOAT, GL_TRUE, sizeof(float) * 4, (void*)(sizeof(float) * 2));
-
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
-        glEnableVertexAttribArray(0);
-		glEnableVertexAttribArray(1);
-
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-        glBindVertexArray(0);
-
-        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-
-		Texture texture(false, "texture.jpg");
-
-		double newTime = 0, oldTime = 0;
-
-		while (!glfwWindowShouldClose(window))
-		{
-			oldTime = newTime;
-			newTime = glfwGetTime();
+        // main loop
+        while (!glfwWindowShouldClose(window))
+        {
+            glEnable(GL_DEPTH_TEST);
+            glDisable(GL_SCISSOR_TEST);
+            
+            lastTime = currentTime;
+            currentTime = (float)glfwGetTime();
 
             Editor::Begin();
+            Time::Tick(currentTime - lastTime);
 
-			MainInput(window);
-			
-            Time::Tick(newTime - oldTime);
+            MainInput(window);
+            SceneCamera.Update();
 
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+            OnUpdate.Invoke();
+            
+            // render
+            Renderer::Render(mesh, ourShader);
+            
+            Editor::Render();
 
-            // draw our first triangle
-            glUseProgram(shader.shaderProgram);
-            glBindVertexArray(VAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
-			glActiveTexture(GL_TEXTURE0);
-			texture.Bind();
-			//glDrawArrays(GL_TRIANGLES, 0, 6);
-            glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-            glBindVertexArray(0);
-            glUseProgram(0);
+            glfwSwapBuffers(window);
+            glfwPollEvents();
+        }
 
-			Editor::Render();
-
-			glfwSwapBuffers(window);
-			glfwPollEvents();
-		}
-
-		Editor::Destroy();
-
-		glfwTerminate();
-		glfwDestroyWindow(window);
+        glfwTerminate();
 	}
-	
-	void MainInput(GLFWwindow* window)
-	{
-		if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-			glfwSetWindowShouldClose(window, true);
+
+    float Engine::sunAngle = 0;
+    ShaderProperties Engine::properties = ShaderProperties();
+
+    void MainEditor()
+    {
+        ImGui::Begin("Material Edit");
+        ImGui::DragFloat("Sun Angle", &Engine::sunAngle);
+        
+        ImGui::DragFloat ("metallic"       , &Engine::properties.metalic   , .1f, 0, 1);
+        ImGui::DragFloat ("roughness"      , &Engine::properties.roughness , .1f, 0, 1);
+        ImGui::DragFloat ("specValue"      , &Engine::properties.specValue , .1f, 0, 5);
+        ImGui::ColorEdit3("sunColor "      , &Engine::properties.sunColor.x );
+        ImGui::ColorEdit3("ambientColor"   , &Engine::properties.ambientColor.x);
+        ImGui::DragFloat ("ambientStrength", &Engine::properties.ambientStrength, .1f, 0, 1);
+
+        ImGui::End();
+    }
+
+    void mouse_callback(GLFWwindow* window, double xpos, double ypos)
+    {
+        Input::MouseCallback(window, xpos, ypos);
+        // std::cout << "glfw: " << " " << xpos << " " << ypos << std::endl;
+        // camera.ProcessMouseMovement();
+    }
+
+    void FocusCallback(GLFWwindow* window, int enter) {
+        Engine::OnFocus.Invoke(enter);
+    }
+
+    void MainInput(GLFWwindow* window) {
+
 	}
 
 	void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 	{
+		Engine::WindowWidth = width;
+		Engine::WindowHeight = height;
 		glViewport(0, 0, width, height);
 	}
 }
+

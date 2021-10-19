@@ -1,13 +1,21 @@
 #pragma once
-#include "Event.h"
+#include "Common.h"
+#include "Renderer.h"
+
 namespace WestEngine
 {
 	class __declspec(dllexport) Engine
 	{
 	public:
-		int windowWidth;
-		int windowHeight;
-		Sharp::Event<void> OnUpdate;
+		static float sunAngle;
+		static int WindowWidth;
+		static int WindowHeight;
+		static ShaderProperties properties;
+
+		static Eventi OnFocus;
+		static Event OnUpdate;
+		static Event OnEditor;
+
 		void Run();
 	};
 }
