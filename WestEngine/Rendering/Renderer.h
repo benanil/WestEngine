@@ -1,19 +1,22 @@
 #pragma once
 #include "Common.h"
 #include "Renderer.h"
+#include "Camera.h"
 #include <list>
 #include <vector>
+#include <MeshRenderer.h>
+#include <unordered_map>
 
 namespace WestEngine
 {
 	struct MaterialProperty
 	{	
-		std::string name;
+		const char* name;
 		unsigned int id;
 		void* value;
 		GLenum type;
 		MaterialProperty() : name("sadlynull"), id(0), type(0) {}
-		MaterialProperty(string _name, unsigned int _id, GLenum _type)
+		MaterialProperty(const char* _name, unsigned int _id, GLenum _type)
 			: name(_name), id(_id), type(_type) {}
 	};
 
@@ -21,20 +24,20 @@ namespace WestEngine
 	{
 		MaterialProperty* properties;
 		unsigned short propertyCount;
-		unsigned char* container;
+		Texture* textures;
 	public:
-		Material(Shader* shader);
-		template<typename T>
-		void SetProperty(const string& name, const T& value);
-		void ShowProperties() const;
-		void UploadValue(int index) const;
+		Material(Shader* shader, Texture* _textures);
+		void ShowProperties();
+		void UploadAllProperties() const;
 		Shader* shader;
 	};
 
 	class Renderer
 	{
-		std::list<Mesh> meshes;
+		static std::list<MeshRenderer*> renderers;
+		static std::unordered_map<Material*, std::list<MeshRenderer*>> materialPair;
 	public:
-		static void Render();
+		static void AddMeshRenderer(MeshRenderer* renderer, Material* material);
+		static void Render(const Camera* camera);
 	};
 }

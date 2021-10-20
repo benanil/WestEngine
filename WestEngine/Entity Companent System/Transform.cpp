@@ -7,11 +7,11 @@ namespace WestEngine
 {
 	Transform::~Transform() {  }
 
-	Transform::Transform(Entity* _entity) :
-		entity(_entity) , 
+	Transform::Transform(const Entity* _entity) : Companent(_entity), 
 		rotation(glm::identity<glm::quat>()),
 		matrix(glm::identity<glm::mat4>()), 
 		scale(glm::one<glm::vec3>()) {
+
 	}
 
 	void Transform::Update(const float& dt) { }
@@ -24,8 +24,8 @@ namespace WestEngine
 	void Transform::OnImgui() {
 
 		if (ImGui::CollapsingHeader("Transform")) {
-			if (ImGui::DragFloat3("Position", &position.x, 0.1f, -10000, 10000)) UpdateTranslation();
-			if (ImGui::DragFloat3("Euler", &eulerDegree.x, 0.1f, -10000, 10000)) UpdateTranslation();
+			if (ImGui::DragFloat3("Position", &position.x, 0.1f)) UpdateTranslation();
+			if (ImGui::DragFloat3("Euler", &eulerDegree.x, 0.1f)) UpdateTranslation();
 			if (ImGui::DragFloat3("Scale", &scale.x, 0.1f, 0, 1000)) UpdateTranslation();
 		}
 	}

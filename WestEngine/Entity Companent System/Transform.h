@@ -5,15 +5,14 @@
 
 namespace WestEngine
 {
-	class Transform : public Behaviour
+	class Transform : virtual Companent
 	{
 		glm::vec3 eulerAngles;
 		Event OnTransformChanged;
 	public:
 		~Transform();
-		Transform(Entity* _entity);
+		Transform(const Entity* _entity);
 		Transform* parent;
-		Entity* entity;
 
 		glm::mat4 matrix     ;
 		glm::vec3 position   ;
@@ -33,10 +32,12 @@ namespace WestEngine
 		void SetEulerAngles(const glm::vec3& euler, bool updateMatrix);
 		void SetRotation   (const glm::quat& quat , bool updateMatrix);
 
-		void Update(const float& dt) ;
-		void Start();
-		void OnValidate();
-		void OnImgui();
+		void Update(const float& dt) override;
+		void Start() override;
+		void OnValidate() override;
+		void OnImgui() override;
+		void Save() override;
+		void Load() override;
 
 		void AddOnTransformChanged(const Action& action);
 		void UpdateTranslation(bool notify = true);

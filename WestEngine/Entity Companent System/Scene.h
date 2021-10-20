@@ -16,17 +16,18 @@ namespace WestEngine
 		std::string path;
 		std::string name;
 		int index;
+	public:
 		~Scene();
 		Scene();
 		Scene(std::string_view path);
-		static std::shared_ptr<Scene> Create(std::string name);
 		static Entity* CurrentEntity;
-		void Start();
-		void Update();
-		void Save();
+		static std::shared_ptr<Scene> Create(std::string name);
+		void Start() const;
+		void Update() const;
+		void Save() const;
+		void EditorUpdate() const;
 		void Load();
 		void Destroy();
-		void EditorUpdate();
 		void AddEntity(const std::shared_ptr<Entity> entity);
 		void AddEntity(const Entity* entity);
 		void RemoveEntity(const Entity* entity);
@@ -36,7 +37,13 @@ namespace WestEngine
 		static std::list<std::shared_ptr<Scene>> scenes;
 		static std::shared_ptr<Scene> CurrentScene;
 	public:
-		static void EditorUpdate() { if (CurrentScene) CurrentScene->EditorUpdate(); }
+		static void Update() 
+		{
+			if (CurrentScene) {
+				CurrentScene->EditorUpdate();
+				CurrentScene->Update();
+			}
+		}
 		static std::shared_ptr<Scene> GetActiveScene();
 		static void RemoveScene(int index);
 		static void RemoveScene(const std::string& name);
@@ -44,6 +51,7 @@ namespace WestEngine
 		static void AddScene(const Scene* scene);
 		static void LoadScene(int index);
 		static void LoadScene(std::string_view name);
+		static const int SceneCount() { return scenes.size(); };
 	};
 
 	// save scenes as binary

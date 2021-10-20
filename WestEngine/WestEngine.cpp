@@ -5,6 +5,9 @@
 #include "glm/glm.hpp"
 #include "imgui/imgui.h"
 #include <vector>
+#include "Scene.h"
+#include "ECS.h"
+#include "AssetManager.h"
 
 namespace WestEngine
 {
@@ -20,8 +23,6 @@ namespace WestEngine
     Event  Engine::OnEditor;
     Eventi Engine::OnFocus;
     
-    static Camera SceneCamera;
-
     void Engine::Run()
 	{
         glfwInit();
@@ -55,18 +56,26 @@ namespace WestEngine
         Device::Create();
         Editor::AddOnEditor(MainEditor);
 
-        Shader ourShader("First.vert", "First.frag");
-        ourShader.Bind();
+        SceneManager::AddScene(new Scene());
+        SceneManager::LoadScene(0);
+
+        const Shader* ourShader = AssetManager::GetShader("First.vert", "First.frag");
+        ourShader->Bind();
         glm::mat4 model(1.0f);
         model = glm::rotate(model, -1.57f, glm::vec3(1.0f, 0.0f, 0.0f));
-        ourShader.setMat4("model", model);
+        ourShader->setMat4("model", model);
 
         Texture texture(true, "map_Base_Colorenyeni.png");
         
         int meshCount = 0;
         Mesh* mesh = MeshLoader::Load(Helper::AssetsPath().append("map.fbx").u8string(), meshCount);
+        
+        Material* material = new Material(ourShader, texture);
 
-        SceneCamera = Camera(glm::vec3(0,0,0));
+        auto firstEntity = std::make_shared<Entity>(new Entity("First Entity"));
+        firstEntity->AddCompanent(new MeshRenderer(firstEntity, mesh, meshCount, material, true));
+        
+        Camera* SceneCamera = new Camera(glm::vec3(0,0,0));
 
         float currentTime = 0, lastTime = 0;
 
@@ -83,13 +92,15 @@ namespace WestEngine
             Time::Tick(currentTime - lastTime);
 
             MainInput(window);
-            SceneCamera.Update();
+
+            SceneCamera->Update();
 
             OnUpdate.Invoke();
-            
+            SceneManager::Update();
+           
             // render
-            Renderer::Render(mesh, ourShader);
-            
+            Renderer::Render(SceneCamera);
+           
             Editor::Render();
 
             glfwSwapBuffers(window);
@@ -99,22 +110,9 @@ namespace WestEngine
         glfwTerminate();
 	}
 
-    float Engine::sunAngle = 0;
-    ShaderProperties Engine::properties = ShaderProperties();
-
     void MainEditor()
     {
-        ImGui::Begin("Material Edit");
-        ImGui::DragFloat("Sun Angle", &Engine::sunAngle);
-        
-        ImGui::DragFloat ("metallic"       , &Engine::properties.metalic   , .1f, 0, 1);
-        ImGui::DragFloat ("roughness"      , &Engine::properties.roughness , .1f, 0, 1);
-        ImGui::DragFloat ("specValue"      , &Engine::properties.specValue , .1f, 0, 5);
-        ImGui::ColorEdit3("sunColor "      , &Engine::properties.sunColor.x );
-        ImGui::ColorEdit3("ambientColor"   , &Engine::properties.ambientColor.x);
-        ImGui::DragFloat ("ambientStrength", &Engine::properties.ambientStrength, .1f, 0, 1);
 
-        ImGui::End();
     }
 
     void mouse_callback(GLFWwindow* window, double xpos, double ypos)

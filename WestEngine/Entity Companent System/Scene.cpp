@@ -1,4 +1,5 @@
 #include "Scene.h"
+#include "spdlog/spdlog.h"
 
 namespace WestEngine
 {
@@ -6,11 +7,16 @@ namespace WestEngine
 		entities.clear();
 	}
 
-	Scene::Scene() : path("Scenes/default.scene"), name("default") { }
+	Scene::Scene() : path("Scenes/default.scene"), name("default") 
+	{
+		spdlog::info("scene added to scenes");
+		SceneManager::AddScene(this);
+	}
 
 	std::shared_ptr<Scene> Scene::Create(std::string name) {
 		auto scene = std::make_shared<Scene>();
 		scene->name = name;
+		scene->index = SceneManager::SceneCount();
 		return scene;
 	}
 
@@ -18,19 +24,19 @@ namespace WestEngine
 		// to be continued
 	}
 
-	void Scene::Start() {
+	void Scene::Start() const {
 		for (auto& entity : entities) {
 			entity->Start();
 		}
 	}
 
-	void Scene::Update() {
+	void Scene::Update() const {
 		for (auto& entity : entities) {
 			entity->Update(Time::deltaTime);
 		}
 	}
 
-	void Scene::Save() {
+	void Scene::Save() const {
 		
 	}
 
@@ -42,7 +48,7 @@ namespace WestEngine
 		entities.clear();
 	}
 
-	void Scene::EditorUpdate() {
+	void Scene::EditorUpdate() const {
 		InspectorWindow();
 		HierarchyWindow();
 	}

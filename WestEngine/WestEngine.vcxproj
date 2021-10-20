@@ -156,7 +156,7 @@
     <ClInclude Include="Data\Box.h" />
     <ClInclude Include="Main\AssetManager.h" />
     <ClInclude Include="Entity Companent System\Behaviour.h" />
-    <ClInclude Include="MeshRenderer.h" />
+    <ClInclude Include="Rendering\MeshRenderer.h" />
     <ClInclude Include="Rendering\Camera.h" />
     <ClInclude Include="Main\Common.h" />
     <ClInclude Include="Entity Companent System\Companent.h" />
@@ -179,12 +179,13 @@
     <ClInclude Include="WestEngine.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Editor\GUI.cpp" />
     <ClCompile Include="Main\AssetManager.cpp" />
     <ClCompile Include="Main\Device.cpp" />
     <ClCompile Include="Editor\Editor.cpp" />
     <ClCompile Include="Entity Companent System\Entity.cpp" />
     <ClCompile Include="Main\Event.cpp" />
-    <ClCompile Include="MeshRenderer.cpp" />
+    <ClCompile Include="Rendering\MeshRenderer.cpp" />
     <ClCompile Include="Rendering\FrameBuffer.cpp" />
     <ClCompile Include="Rendering\glad.c" />
     <ClCompile Include="Main\Helper.cpp" />

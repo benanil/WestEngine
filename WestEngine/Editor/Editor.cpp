@@ -221,3 +221,4 @@ namespace WestEngine::Editor
         style.TabRounding = 0.0f;
     }
 }
+

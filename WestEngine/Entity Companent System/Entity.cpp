@@ -1,7 +1,10 @@
-#include "Entity.h"
+#include "ECS.h"
+#include "Scene.h"
 
 namespace WestEngine
 {
+	Companent::Companent(const Entity* _entity) : entity(_entity) { }
+
 	Entity::~Entity() {
 		companents.clear();
 		free(transform);
@@ -11,8 +14,9 @@ namespace WestEngine
 
 	}
 
-	Entity::Entity(const std::string& Name) : name(Name) ,
-		transform(new Transform(this)){
+	Entity::Entity(const std::string& Name)
+		: name(Name) , transform(new Transform(this)){
+		SceneManager::GetActiveScene()->AddEntity(this);
 	}
 
 	void WestEngine::Entity::Update(const float& dt) {
@@ -40,6 +44,14 @@ namespace WestEngine
 		}
 	}
 	
+	void Entity::Save() {
+		
+	}
+
+	void Entity::Load() {
+
+	}
+
 	void Entity::AddCompanent(Companent* companent) {
 		companents.push_back(std::make_shared<Companent>(companent));
 	}
@@ -54,6 +66,7 @@ namespace WestEngine
 			if (std::dynamic_pointer_cast<T>(companent)) 
 			{
 				companents.remove(companent);
+				break;
 			}
 		}
 	}

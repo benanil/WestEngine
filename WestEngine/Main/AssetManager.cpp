@@ -5,7 +5,7 @@ namespace WestEngine
 	void AssetManager::AddTexture(Texture* texture) { textures.push_back(texture); }
 	void AssetManager::AddMesh(Mesh* mesh) { meshes.push_back(mesh); }
 
-	const Texture* AssetManager::GetTexture(const std::string& path, bool generateMipMap)
+	Texture* AssetManager::GetTexture(const std::string& path, bool generateMipMap)
 	{
 		// search in assets
 		for (auto& texture : textures) 
@@ -21,8 +21,8 @@ namespace WestEngine
 	}
 
 	/// <summary> gets mesh if its not exist creates new one </summary>
-	/// <param name="path"> this could be identifier: path + name </param>
-	const Mesh* AssetManager::GetMesh(const std::string& path)
+	/// <param name="path"> this could be identifier: path + :name </param>
+	Mesh* AssetManager::GetMesh(const std::string& path)
 	{
 		// search in assets
 		for (auto& mesh : meshes)
@@ -42,5 +42,20 @@ namespace WestEngine
 		}
 
 		return GetMesh(path);
+	}
+	
+	Shader* AssetManager::GetShader(const std::string& vertexPath, const std::string& fragmentPath)
+	{
+		for (auto& shader : shaders)
+		{
+			if (shader->vertexPath == vertexPath && shader->fragmentPath == fragmentPath)
+			{
+				return shader;
+			}
+		}
+
+		Shader* shader = new Shader(vertexPath, fragmentPath);
+		shaders.push_back(shader);
+		return shader;
 	}
 }
