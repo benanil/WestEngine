@@ -13,10 +13,11 @@
 #include "Camera.h"
 #include <Input.h>
 #include "Helper.h"
+#include <string>
 
 typedef unsigned char byte;
 typedef unsigned int uint;
-
+typedef std::string string;
 
 #define WPROPERTY(type, var) \
     type _##var; \

@@ -65,34 +65,35 @@ namespace WestEngine
 		int activeUniforms = 0;
 		glGetProgramiv(shaderProgram, GL_ACTIVE_UNIFORMS, &activeUniforms);
 		
-		map = std::unordered_map<std::string, int>();
 		map.reserve(activeUniforms);
 		for (int i = 0; i < activeUniforms; i++) {
 			char buffer[64];
 
 			GLsizei uniform_length = 0;
 			GLint	uniform_size = 0;
-			GLenum	uniform_type = 0;
-			glGetActiveUniform(shaderProgram, (GLuint)i, (GLsizei)sizeof(buffer), &uniform_length, &uniform_size, &uniform_type, buffer);
+			UniformData data;
+
+			glGetActiveUniform(shaderProgram, (GLuint)i, (GLsizei)sizeof(buffer), &uniform_length, &uniform_size, &data.type, buffer);
 			std::string name(buffer, uniform_length);
 			std::cout << "uniform " << name << std::endl;
-			map.insert({ name, glGetUniformLocation(shaderProgram, name.c_str()) });
+
+			map.insert({ name, data});
 		}
 	}
 
 	// utility uniform functions
-	void Shader::setBool(const std::string& name, bool value) const { glUniform1i(map[name], (int)value); }
-	void Shader::setInt(const std::string& name, const int& value) const { glUniform1i(map[name], value); }
-	void Shader::setFloat(const std::string& name, const float& value) const { glUniform1f(map[name], value); }
-	void Shader::setVec2(const std::string& name, glm::vec2& value) const { glUniform2fv(map[name], 1, &value[0]); }
-	void Shader::setVec2(const std::string& name, const float& x, const float& y) const { glUniform2f(map[name], x, y); }
-	void Shader::setVec3(const std::string& name, const glm::vec3& value) const  { glUniform3fv(map[name], 1, &value[0]); }
-	void Shader::setVec3(const std::string& name, const float& x, const float& y, const float& z) const { glUniform3f(map[name], x, y, z); }
-	void Shader::setVec4(const std::string& name, const float& x, const float& y, const float& z, const float& w) const { glUniform4f(map[name], x, y, z, w); }
-	void Shader::setVec4(const std::string& name, const glm::vec4& value) const { glUniform4fv(map[name], 1, &value[0]); }
-	void Shader::setMat2(const std::string& name, const glm::mat2& mat) const { glUniformMatrix2fv(map[name], 1, GL_FALSE, &mat[0][0]); }
-	void Shader::setMat3(const std::string& name, const glm::mat3& mat) const { glUniformMatrix3fv(map[name], 1, GL_FALSE, &mat[0][0]); }
-	void Shader::setMat4(const std::string& name, const glm::mat4& mat) const { glUniformMatrix4fv(map[name], 1, GL_FALSE, &mat[0][0]);  }
+	void Shader::setBool(const std::string& name, bool value) { glUniform1i(map[name].id, (int)value); }
+	void Shader::setInt(const std::string& name, const int& value) { glUniform1i(map[name].id, value); }
+	void Shader::setFloat(const std::string& name, const float& value) { glUniform1f(map[name].id, value); }
+	void Shader::setVec2(const std::string& name, glm::vec2& value)  { glUniform2fv(map[name].id, 1, &value[0]); }
+	void Shader::setVec2(const std::string& name, const float& x, const float& y) { glUniform2f(map[name].id, x, y); }
+	void Shader::setVec3(const std::string& name, const glm::vec3& value)  { glUniform3fv(map[name].id, 1, &value[0]); }
+	void Shader::setVec3(const std::string& name, const float& x, const float& y, const float& z) { glUniform3f(map[name].id, x, y, z); }
+	void Shader::setVec4(const std::string& name, const float& x, const float& y, const float& z, const float& w) { glUniform4f(map[name].id, x, y, z, w); }
+	void Shader::setVec4(const std::string& name, const glm::vec4& value) { glUniform4fv(map[name].id, 1, &value[0]); }
+	void Shader::setMat2(const std::string& name, const glm::mat2& mat) { glUniformMatrix2fv(map[name].id, 1, GL_FALSE, &mat[0][0]); }
+	void Shader::setMat3(const std::string& name, const glm::mat3& mat) { glUniformMatrix3fv(map[name].id, 1, GL_FALSE, &mat[0][0]); }
+	void Shader::setMat4(const std::string& name, const glm::mat4& mat) { glUniformMatrix4fv(map[name].id, 1, GL_FALSE, &mat[0][0]);  }
 
     std::string Shader::ReadAllText(std::string filePath) const {
 		

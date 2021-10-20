@@ -7,13 +7,13 @@
 namespace WestEngine
 {
 	Texture::Texture(const bool generateMipMaps, const char* path) {
-		const char* imgPath = std::filesystem::current_path().parent_path().append("Assets").append(path).u8string().c_str();
+		path = Helper::AssetsPath().append(path).u8string().c_str();
 		int width, height;
 		int channels;
-		unsigned char* data = SOIL_load_image(imgPath, &width, &height, &channels, 0);
+		unsigned char* data = SOIL_load_image(path, &width, &height, &channels, 0);
 
 		std::cout << "channels" << channels << std::endl;
-		std::cout << "image path: " << imgPath << std::endl;
+		std::cout << "image path: " << path << std::endl;
 		std::cout << "texture message: " << SOIL_last_result() << std::endl;
 
 		texID = 0;

@@ -80,14 +80,14 @@
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)\bin\$(Configuration)\SandBox\</OutDir>
     <IntDir>$(SolutionDir)\bin-int\$(Configuration)\$(ProjectName)\</IntDir>
-    <IncludePath>$(SolutionDir)\WestEngine\Main;$(SolutionDir)\WestEngine\Rendering;$(SolutionDir)\WestEngine\Editor;$(SolutionDir)\WestEngine\Entity Companent System;$(SolutionDir)\WestEngine;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)\WestEngine\Data;$(SolutionDir)\WestEngine\Main;$(SolutionDir)\WestEngine\Rendering;$(SolutionDir)\WestEngine\Editor;$(SolutionDir)\WestEngine\Entity Companent System;$(SolutionDir)\WestEngine;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)\libs;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)\bin\$(Configuration)\SandBox\</OutDir>
     <IntDir>$(SolutionDir)\bin-int\$(Configuration)\$(ProjectName)\</IntDir>
-    <IncludePath>$(SolutionDir)\WestEngine\Main;$(SolutionDir)\WestEngine\Rendering;$(SolutionDir)\WestEngine\Editor;$(SolutionDir)\WestEngine\Entity Companent System;$(SolutionDir)\WestEngine;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)\WestEngine\Data;$(SolutionDir)\WestEngine\Main;$(SolutionDir)\WestEngine\Rendering;$(SolutionDir)\WestEngine\Editor;$(SolutionDir)\WestEngine\Entity Companent System;$(SolutionDir)\WestEngine;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)\libs;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -153,6 +153,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Data\Box.h" />
     <ClInclude Include="Main\AssetManager.h" />
     <ClInclude Include="Entity Companent System\Behaviour.h" />
     <ClInclude Include="MeshRenderer.h" />
@@ -188,6 +189,7 @@
     <ClCompile Include="Rendering\glad.c" />
     <ClCompile Include="Main\Helper.cpp" />
     <ClCompile Include="Main\Input.cpp" />
+    <ClCompile Include="Rendering\Material.cpp" />
     <ClCompile Include="Rendering\Mesh.cpp" />
     <ClCompile Include="Rendering\Renderer.cpp" />
     <ClCompile Include="Entity Companent System\Scene.cpp" />
@@ -204,6 +206,7 @@
     <None Include="..\Assets\First.frag" />
     <None Include="..\Assets\First.vert" />
     <None Include="..\Assets\PostProcessing.glsl" />
+    <None Include="cpp.hint" />
     <None Include="Main\cpp.hint" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

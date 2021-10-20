@@ -12,6 +12,7 @@
 
 #include <iostream>
 #include <vector>
+#include <Box.h>
 
 namespace WestEngine
 {
@@ -37,16 +38,28 @@ namespace WestEngine
 	{
 	public:
 		Vertex* vertices;
+		std::string path;
+		std::string name;
+		Math::Box3 area;
+
 		unsigned int* indices;
 		
 		unsigned int indexCount;
 		unsigned int vertexCount;
 		unsigned int vao, vbo, ebo;
 		
-		Mesh(const aiMesh& aimesh);
+		Mesh(Vertex* _vertices, unsigned int* _indices, int _vertexCount, int _indexCount)
+			: vertices(_vertices), indices(_indices), vertexCount(_vertexCount), indexCount(_indexCount) {
+			Invalidate();
+		}
+
+		Mesh(const aiMesh& aimesh, const string& path, const string& name);
+
+		string GetIdentifier() { return path + ':' + name; }
 
 		void Invalidate();
 		void Draw()	const;
+		Math::Box3 CalculateArea();
 	};
 
 	class MeshLoader

@@ -21,14 +21,14 @@ namespace WestEngine
 		meshCount = scene->mNumMeshes;
 		Mesh* result = (Mesh*)malloc(sizeof(Mesh) * scene->mNumMeshes);
 
-		for (uint i = 0; i < scene->mNumMeshes; i++) result[i] = Mesh(*scene->mMeshes[i]);
+		for (uint i = 0; i < scene->mNumMeshes; i++) result[i] = Mesh(*scene->mMeshes[i], path);
 		
 		importer.FreeScene();
 
 		return result;
 	}
 
-	Mesh::Mesh(const aiMesh& aimesh)
+	Mesh::Mesh(const aiMesh& aimesh, const string& path) 
 	{
 		indexCount = aimesh.mNumFaces * 3;
 		vertexCount = aimesh.mNumVertices;
@@ -52,6 +52,8 @@ namespace WestEngine
 			vertices[i].tangent = aimesh.mTangents[i];
 		}
 
+		area = CalculateArea();
+		this->path = path + aimesh.mName.C_Str();
 		Invalidate();
 	}
 
@@ -68,7 +70,6 @@ namespace WestEngine
 		glBindBuffer(GL_ARRAY_BUFFER, vbo);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * vertexCount, vertices, GL_STATIC_DRAW);
 	
-
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)0);
 		glVertexAttribPointer(1, 3, GL_FLOAT, GL_TRUE , sizeof(Vertex), (const void*)12);
 		glVertexAttribPointer(2, 2, GL_FLOAT, GL_TRUE , sizeof(Vertex), (const void*)24); // 24 = 6 float 
@@ -78,6 +79,22 @@ namespace WestEngine
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * indexCount, indices, GL_STATIC_DRAW);
 	
 		glBindVertexArray(0);
+		area = CalculateArea();
+	}
+
+	Math::Box3 Mesh::CalculateArea()
+	{
+		glm::vec3 min = glm::vec3(Math::minf, Math::minf, Math::minf);
+		glm::vec3 max = glm::vec3(Math::maxf, Math::maxf, Math::maxf);
+
+		for (uint i = 0; i < vertexCount; i++)  {
+			if (vertices[i].position.x > max.x) max.x = vertices[i].position.x;
+			if (vertices[i].position.y > max.y) max.y = vertices[i].position.y;
+			if (vertices[i].position.x < min.x) min.x = vertices[i].position.x;
+			if (vertices[i].position.y < min.y) min.y = vertices[i].position.y;
+		}
+
+		return Math::Box3(min, max);
 	}
 
 	void Mesh::Draw() const {
