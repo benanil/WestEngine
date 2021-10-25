@@ -19,6 +19,8 @@ namespace WestEngine
 	{
 		const char* title;
 		Action action;
+		TitleAndAction() : title("empty title"), action(nullptr) {}
+		TitleAndAction(const char* _title, Action _action) : title(_title), action(_action) {}
 	};
 
 	class Editor

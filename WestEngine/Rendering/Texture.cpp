@@ -70,9 +70,10 @@ namespace WestEngine
 		
 		if (data == nullptr) spdlog::error("icon Creation Failed!");
 	
-		unsigned int icon = CreateIconInternal(data, width, height, channels);
+		unsigned int iconID = CreateIconInternal(data, width, height, channels);
+		
 		stbi_image_free(data);
-		return icon;
+		return iconID;
 	}
 
 	/// <summary> downsamles the image </summary>
@@ -86,7 +87,8 @@ namespace WestEngine
 		stbir_resize_uint8(data, width, height, width * channelCount,
 		iconData, 64, 64, 64 * channelCount, channelCount); 
 
-		if (ChannelType == GL_RGBA) spdlog::warn("channel type true");
+		if (ChannelType == GL_RGBA) spdlog::warn("channel type true!");
+		if (iconData == nullptr) spdlog::error("icon loading failed Internal!");
 
 		// create opengl texture for icon
 		unsigned int iconID = 0;
@@ -95,6 +97,9 @@ namespace WestEngine
 		glTexImage2D(GL_TEXTURE_2D, 0, ChannelType, 64, 64, 0, ChannelType, GL_UNSIGNED_BYTE, iconData);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glBindTexture(GL_TEXTURE_2D, 0);
 		stbi_image_free(iconData);
 		return iconID;
 	}

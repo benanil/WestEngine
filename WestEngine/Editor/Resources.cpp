@@ -2,9 +2,12 @@
 #include "Common.h"
 #include <filesystem>
 #include "AssetManager.h"
+#include "spdlog/spdlog.h"
 
 namespace WestEngine
 {
+	void Click();
+
 	void ResourcesWindow::Initialize()
 	{
 	
@@ -18,29 +21,70 @@ namespace WestEngine
 		
 		ImGui::Begin("Resources");
 		
+		// todo: make path static & add oppen close folders & back button & dragg and drop
 		auto path = Helper::AssetsPath();
+		int id = 0; // for imgui push id
 
 		ImGui::Separator();
+		
 		for (auto& directory : std::filesystem::directory_iterator(path))
 		{
-			const char* fileName = directory.path().filename().u8string().c_str();
+			std::string fileName = directory.path().filename().u8string();
 
 			if (directory.is_directory()) {
+				ImGui::PushID(id++);
+
 				ImGui::BeginGroup();
-				GUI::ImageButton(folderIcon);
-				ImGui::Text(fileName);
+				if (GUI::ImageButton(folderIcon))
+				{
+					spdlog::info("clicked {0}", fileName);
+				}
+				ImGui::TextWrapped(fileName.c_str());
 				ImGui::EndGroup();
+				if (ImGui::IsItemHovered())
+				{
+					ImGui::BeginTooltip();
+					ImGui::Text(fileName.c_str());
+					ImGui::EndTooltip();
+				}
+				
+				ImGui::PopID();
 			}
-			else  
-			{ // file
+
+			ImGui::SameLine();
+		}
+
+		for (auto& directory : std::filesystem::directory_iterator(path))
+		{
+			std::string fileName = directory.path().filename().u8string();
+
+			if (!directory.is_directory()) {
+				ImGui::PushID(id++);
+
 				ImGui::BeginGroup();
-				GUI::ImageButton(fileIcon);
-				ImGui::Text(fileName);
+				if (GUI::ImageButton(fileIcon)) {
+					spdlog::info("clicked {0}", fileName);
+				}
+				ImGui::TextWrapped(fileName.c_str());
 				ImGui::EndGroup();
+
+				if (ImGui::IsItemHovered())
+				{
+					ImGui::BeginTooltip();
+					ImGui::Text(fileName.c_str());
+					ImGui::EndTooltip();
+				}
+
+				ImGui::PopID();
 			}
 			ImGui::SameLine();
 		}
 
 		ImGui::End();
+	}
+
+	void Click()
+	{
+		std::cout << "right click pressed !" << std::endl;
 	}
 }

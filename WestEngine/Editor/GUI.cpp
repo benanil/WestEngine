@@ -32,7 +32,7 @@ namespace WestEngine
 	
 	bool GUI::ImageButton(const unsigned int texture, const float& size)
 	{
-		return ImGui::ImageButton((void*)texture, { size , size }, { 0, 1 }, { 1, 0 });
+		return ImGui::ImageButton((void*)texture, { size , size }, { 1, 0 }, { 0, 1 });
 	}
 
 	// Usage:
