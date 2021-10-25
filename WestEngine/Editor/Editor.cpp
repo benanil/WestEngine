@@ -5,16 +5,16 @@
 #include <GLFW/glfw3.h>
 #include <glm/vec2.hpp>
 
-namespace WestEngine::Editor
+namespace WestEngine
 {
-    void Destroy()
+    void Editor::Destroy()
     {
         ImGui_ImplOpenGL3_Shutdown();
         ImGui_ImplGlfw_Shutdown();
         ImGui::DestroyContext();
     }
 
-    void Create(GLFWwindow* window)
+    void Editor::Create(GLFWwindow* window)
     {
         IMGUI_CHECKVERSION();
         ImGui::CreateContext();
@@ -32,25 +32,28 @@ namespace WestEngine::Editor
         ImGui_ImplOpenGL3_Init("#version 440 core");
         ImGui_ImplGlfw_InitForOpenGL(window, true);
 
-        HalfLifeTheme();
+        // HalfLifeTheme();
+        DarkTheme();
+        ResourcesWindow::Initialize();
     }
 
     static Event OnEditor;
 
-    void AddOnEditor(const Action& action) {
+    void Editor::AddOnEditor(const Action& action) {
         OnEditor.Add(action);
     }
     
-    void Begin()
+    void Editor::Begin()
     {
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
     }
 
-    void Render()
+    void Editor::Render()
     {
         OnEditor.Invoke();
+        ResourcesWindow::DrawWindow();
 
         ImGui::Render();
         
@@ -64,7 +67,7 @@ namespace WestEngine::Editor
         }
     }
 
-    void DarkTheme()
+    void Editor::DarkTheme()
     {
         ImGuiStyle& style = ImGui::GetStyle();
         ImVec4* colors = style.Colors;
@@ -156,7 +159,7 @@ namespace WestEngine::Editor
 #endif
     }
 
-    void HalfLifeTheme()
+    void Editor::HalfLifeTheme()
     {
         ImVec4* colors = ImGui::GetStyle().Colors;
         colors[ImGuiCol_Text] = ImVec4(1.00f, 1.00f, 1.00f, 1.00f);

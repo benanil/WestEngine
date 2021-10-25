@@ -1,6 +1,6 @@
 #pragma once
 
-#include "glad.h"
+#include "Common.h"
 #include <iostream>
 #include <string>
 #include <iostream>
@@ -14,8 +14,9 @@ namespace WestEngine
 {
 	struct UniformData
 	{	
+		/// <summary> uniform location </summary>
 		unsigned int id;
-		GLenum type;
+		GLenum type; // GL_FLOAT etc.
 		UniformData() : id(0), type(0) {}
 	};
 
@@ -29,7 +30,8 @@ namespace WestEngine
 		std::string vertexPath, fragmentPath;
 	public:
 		Shader(const std::string& vertexPath, const std::string& fragmentPath);
-		void Bind() const { glUseProgram(shaderProgram); }
+		void Bind() const  { glUseProgram(shaderProgram); }
+		inline static void Unbind() { glUseProgram(0); };
 		// utility uniform functions
 		void setBool(const std::string& name, bool value) ;
 		void setInt (const std::string& name, const int& value) ;

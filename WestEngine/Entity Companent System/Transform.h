@@ -2,13 +2,16 @@
 #include "Common.h"
 #include "Behaviour.h"
 #include "Entity.h"
+#include "Component.h"
+#include "glm/detail/type_quat.hpp"
+#include "glm/simd/matrix.h"
 
 namespace WestEngine
 {
-	class Transform : virtual Companent
+	class Transform : public Companent
 	{
 		glm::vec3 eulerAngles;
-		Event OnTransformChanged;
+		EventMat OnTransformChanged;
 	public:
 		~Transform();
 		Transform(const Entity* _entity);
@@ -26,11 +29,11 @@ namespace WestEngine
 		const glm::vec3& GetEulerAngles() const { return eulerAngles; }
 		const glm::quat& GetRotation()    const { return rotation; }
 
-		void SetMatrix     (const glm::mat4& mat4 , bool updateMatrix);
-		void SetPosition   (const glm::vec3& vec3 , bool updateMatrix);
-		void SetScale      (const glm::vec3& vec3 , bool updateMatrix);
-		void SetEulerAngles(const glm::vec3& euler, bool updateMatrix);
-		void SetRotation   (const glm::quat& quat , bool updateMatrix);
+		void SetMatrix     (const glm::mat4& mat4 , bool updateMatrix = true);
+		void SetPosition   (const glm::vec3& vec3 , bool updateMatrix = true);
+		void SetScale      (const glm::vec3& vec3 , bool updateMatrix = true);
+		void SetEulerAngles(const glm::vec3& euler, bool updateMatrix = true);
+		void SetRotation   (const glm::quat& quat , bool updateMatrix = true);
 
 		void Update(const float& dt) override;
 		void Start() override;
@@ -39,7 +42,7 @@ namespace WestEngine
 		void Save() override;
 		void Load() override;
 
-		void AddOnTransformChanged(const Action& action);
+		void AddOnTransformChanged(const CallbackMat& action);
 		void UpdateTranslation(bool notify = true);
 	};
 }

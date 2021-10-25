@@ -2,7 +2,11 @@
 #include <iostream>
 #include <filesystem>
 
-namespace Helper
+namespace WestEngine
 {
-	static std::filesystem::path AssetsPath();
+	class Helper
+	{	
+	public:
+		static std::filesystem::path AssetsPath();
+	};
 }

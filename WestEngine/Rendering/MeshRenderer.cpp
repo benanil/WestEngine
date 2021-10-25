@@ -1,15 +1,26 @@
 #include "MeshRenderer.h"
+#include "imgui/imgui.h"
+#include "spdlog/spdlog.h"
 
 namespace WestEngine
 {
-	MeshRenderer::MeshRenderer(const Entity* entity, const Mesh* _mesh, int _meshCount, 
-		Material* _material, bool _singleMaterial) : Companent(entity), mesh(mesh), 
-		meshCount(_meshCount), material(_material)
+	MeshRenderer::~MeshRenderer()
 	{
-		Renderer::AddMeshRenderer(this, material);
+		RETURNIF(disposed)
+		OnRemoved();
+		Renderer::Get().RemoveMeshRenderer(this);
+		disposed = true;
 	}
 
-	void MeshRenderer::OnRender(bool shadowPass = false) const {
+	MeshRenderer::MeshRenderer(const Entity* entity, Mesh* _mesh, int _meshCount, 
+		Material* _material, bool _singleMaterial) : Companent(entity, "Mesh Renderer"), mesh(_mesh),
+		meshCount(_meshCount), material(_material)
+	{
+		spdlog::error("constructor of the mesh renderer");
+		Renderer::Get().AddMeshRenderer(this, material);
+	}
+
+	void MeshRenderer::OnRender(bool shadowPass) const {
 		
 		material->shader->setMat4("model", entity->transform->matrix);
 
@@ -25,15 +36,15 @@ namespace WestEngine
 		// draw material properties
 		if (ImGui::CollapsingHeader("MeshRenderer"))
 		{
-			ImGui::Text("Mesh Name");
-			ImGui::SameLine();
-			ImGui::Text(mesh->name.c_str());
+			ImGui::Text("First Mesh"); // ImGui::Text(mesh->name.c_str());
 			material->ShowProperties();
 		}
 	}
 	
 	void MeshRenderer::OnValidate() { }
-	
+	void MeshRenderer::Save() {}
+	void MeshRenderer::Load() {}
+
 	void MeshRenderer::Update(const float& dt) { }
 	void MeshRenderer::Start() { }
 }

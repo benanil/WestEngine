@@ -1,23 +1,21 @@
 #pragma once
 #include "Common.h"
-#include "Renderer.h"
 #include "Camera.h"
-#include <list>
-#include <vector>
 #include <MeshRenderer.h>
-#include <unordered_map>
+#include "Shader.h"
+#include "Texture.h"
 
 namespace WestEngine
 {
 	struct MaterialProperty
 	{	
 		const char* name;
-		unsigned int id;
-		void* value;
+		unsigned int location;
+		float* value; // maximum 16 because of mat4
 		GLenum type;
-		MaterialProperty() : name("sadlynull"), id(0), type(0) {}
+		MaterialProperty() : name("sadlynull"), location(0), type(0) {}
 		MaterialProperty(const char* _name, unsigned int _id, GLenum _type)
-			: name(_name), id(_id), type(_type) {}
+			: name(_name), location(_id), type(_type) {}
 	};
 
 	class Material
@@ -26,18 +24,62 @@ namespace WestEngine
 		unsigned short propertyCount;
 		Texture* textures;
 	public:
+		// index in the renderers array
+		// you don't need to use it other than renderer 
+		unsigned char index;
+	public:
 		Material(Shader* shader, Texture* _textures);
 		void ShowProperties();
+		
+		void SetProperty(const char* name, void* value, const char& size);
+		void SetProperty(const unsigned short& index, const void* value, const char& size);
+		unsigned short GetPropertyIndex(const char* name) const;
+
 		void UploadAllProperties() const;
 		Shader* shader;
 	};
 
+	struct MaterialPair
+	{
+		Material* material;
+		unsigned short indexCount;
+		unsigned short indexes[1024]; // index of mesh renderers in renderer class
+
+		void AddIndex(const unsigned short& index) {
+			indexes[indexCount++] = index;
+		}
+
+		void RemoveAt(const short& index)
+		{
+			indexCount--;
+			indexes[index] = indexes[indexCount];
+			indexes[indexCount] = 0; // set old index to 0 its not necesary but however
+		}
+	};
+
+	class MeshRenderer;
 	class Renderer
 	{
-		static std::list<MeshRenderer*> renderers;
-		static std::unordered_map<Material*, std::list<MeshRenderer*>> materialPair;
+		MeshRenderer* renderers[2048];
+		unsigned short rendererCount;
+		/// <summary> mesh indexes and materials </summary>
+		MaterialPair materialPair[32];
+		int materialCount;
+
+		inline short GetRendererIndex(const MeshRenderer* renderer);
 	public:
-		static void AddMeshRenderer(MeshRenderer* renderer, Material* material);
-		static void Render(const Camera* camera);
+		void AddMeshRenderer(MeshRenderer* renderer, Material* material);
+		void Render(const Camera& camera);
+		void RemoveMeshRenderer(const MeshRenderer* renderer);
+		/// <summary> 
+		/// dispose all of the mesh renderers
+		/// use it when scene cleared</summary>
+	    void ClearRenderers();
+
+		static Renderer& Get()
+		{
+			static Renderer renderer;
+			return renderer;
+		}
 	};
 }

@@ -1,5 +1,7 @@
 #pragma once
 #include "glm/glm.hpp"
+#include "glm/gtc/constants.hpp"
+
 #include <limits>
 #undef min
 #undef max
@@ -8,6 +10,8 @@ namespace WestEngine::Math
 {
 	static constexpr float minf = std::numeric_limits<float>::min();
 	static constexpr float maxf = std::numeric_limits<float>::infinity();
+	static constexpr int mini = std::numeric_limits<int>::min();
+	static constexpr int maxi = std::numeric_limits<int>::infinity();
 
 	struct Box2
 	{

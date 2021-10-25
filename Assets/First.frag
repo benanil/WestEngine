@@ -12,14 +12,14 @@ in vsOut
 } vsIn;
 
 uniform sampler2D texture0;
-uniform float sunAngle;
+uniform float sunAngle = 0.38;
 uniform vec3 viewPos;
 
 uniform float metalic        ;
 uniform float roughness      ;
-uniform float specValue      ;
-uniform vec3  sunColor       ;
-uniform vec3  ambientColor   ;
+uniform float specValue      = 1;
+uniform vec4  sunColor       = vec4(1);
+uniform vec4  ambientColor   = vec4(1);
 uniform float ambientStrength;
 
 const float PI = 3.14159265359;
@@ -125,9 +125,9 @@ void main() {
     vec3 specfresnel = fresnel_factor(F0, HdV);
     vec3 specular = cooktorrance_specular(NdL, NdV, NdH, specfresnel, roughness) * specValue * NdL * ao;
 
-    vec3 ambient = ambientColor * (ambientStrength / 10);
+    vec3 ambient = ambientColor.xyz * (ambientStrength / 10);
 
-    vec3 diffuse = tex.xyz * NdL * sunColor * ao;
+    vec3 diffuse = tex.xyz * NdL * sunColor.xyz * ao;
     // vec3 indirectLights = CalculateIndirectLights(ao, roughness, specValue, F0);
 
     outputColor = vec4(diffuse + specular + ambient, 1);

@@ -79,7 +79,7 @@ namespace WestEngine
 			glGetActiveUniform(shaderProgram, (GLuint)i, (GLsizei)sizeof(buffer), &uniform_length, &uniform_size, &data.type, buffer);
 			std::string name(buffer, uniform_length);
 			std::cout << "uniform " << name << std::endl;
-
+			data.id = i; //uniform location
 			map.insert({ name, data});
 		}
 	}
@@ -95,13 +95,13 @@ namespace WestEngine
 	void Shader::setVec4(const std::string& name, const glm::vec4& value) { glUniform4fv(map[name].id, 1, &value[0]); }
 	void Shader::setMat2(const std::string& name, const glm::mat2& mat) { glUniformMatrix2fv(map[name].id, 1, GL_FALSE, &mat[0][0]); }
 	void Shader::setMat3(const std::string& name, const glm::mat3& mat) { glUniformMatrix3fv(map[name].id, 1, GL_FALSE, &mat[0][0]); }
-	void Shader::setMat4(const std::string& name, const glm::mat4& mat) { glUniformMatrix4fv(map[name].id, 1, GL_FALSE, &mat[0][0]);  }
+	void Shader::setMat4(const std::string& name, const glm::mat4& mat) { glUniformMatrix4fv(map[name].id, 1, GL_FALSE, &mat[0][0]); }
 
 	void Shader::setFloat(const std::string& name, const float* value) { glUniform1fv(map[name].id, 1, value); };
 	void Shader::setVec2 (const std::string& name, const float* value) { glUniform2fv(map[name].id, 1, value); };
 	void Shader::setVec3 (const std::string& name, const float* value) { glUniform3fv(map[name].id, 1, value); };
 	void Shader::setVec4 (const std::string& name, const float* value) { glUniform4fv(map[name].id, 1, value); };
-	void Shader::setMat4 (const std::string& name, const float* value) { glUniformMatrix4fv(map[name].id, 1, false, value); };
+	void Shader::setMat4 (const std::string& name, const float* value) { glUniformMatrix4fv(map[name].id, 1, false, value); }
 
     std::string Shader::ReadAllText(std::string filePath) const {
 		

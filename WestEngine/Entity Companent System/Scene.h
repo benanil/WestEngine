@@ -9,49 +9,57 @@ namespace WestEngine
 {
 	class Scene
 	{
-		std::list<std::shared_ptr<Entity>> entities;
+		Entity* entities[2048];
+		unsigned short entityCount;
+		bool disposed;
 		void InspectorWindow() const;
 		void HierarchyWindow() const;
 	public:
 		std::string path;
-		std::string name;
-		int index;
+		const char* name;
+		unsigned char index;
 	public:
 		~Scene();
 		Scene();
-		Scene(std::string_view path);
+		Scene(const char* path);
 		static Entity* CurrentEntity;
-		static std::shared_ptr<Scene> Create(std::string name);
+		static void SetCurrentEntity(Entity* entity);
+		static Scene* Create(const char* name);
 		void Start() const;
 		void Update() const;
 		void Save() const;
 		void EditorUpdate() const;
 		void Load();
 		void Destroy();
-		void AddEntity(const std::shared_ptr<Entity> entity);
-		void AddEntity(const Entity* entity);
-		void RemoveEntity(const Entity* entity);
+		void AddEntity(Entity* entity);
+		void RemoveEntity(Entity* entity);
 	};
 
 	class SceneManager {
-		static std::list<std::shared_ptr<Scene>> scenes;
-		static std::shared_ptr<Scene> CurrentScene;
+		Scene* scenes[12];
+		unsigned char sceneCount;
+		Scene* CurrentScene;
+		void _DeleteScene(const unsigned char& index);
+		void _DeleteScene(const char* name);
+		void _AddScene(Scene* scene);
+		void _LoadScene(const unsigned char& index);
+		void _LoadScene(std::string_view name);
+		void _Update();
 	public:
-		static void Update() 
-		{
-			if (CurrentScene) {
-				CurrentScene->EditorUpdate();
-				CurrentScene->Update();
-			}
-		}
-		static std::shared_ptr<Scene> GetActiveScene();
-		static void RemoveScene(int index);
-		static void RemoveScene(const std::string& name);
-		static void AddScene(std::shared_ptr<Scene> scene);
-		static void AddScene(const Scene* scene);
-		static void LoadScene(int index);
+		static void Update()  { Get()._Update(); }
+		static Scene* GetActiveScene();
+		static void DeleteScene(const unsigned char& index);
+		static void DeleteScene(const char* name);
+		static void AddScene(Scene* scene);
+		static void LoadScene(const unsigned char& index);
 		static void LoadScene(std::string_view name);
-		static const int SceneCount() { return scenes.size(); };
+		static const unsigned char SceneCount() { return Get().sceneCount; };
+		
+		static SceneManager& Get()
+		{
+			static SceneManager instance;
+			return instance;
+		}
 	};
 
 	// save scenes as binary
@@ -61,6 +69,5 @@ namespace WestEngine
 		static void Save(std::string_view path);
 		static Scene Load(std::string_view path);
 	};
-
 }
 

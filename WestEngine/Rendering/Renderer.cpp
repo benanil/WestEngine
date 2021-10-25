@@ -1,43 +1,125 @@
-#include "glad.h"
 #include "Common.h"
 #include "Renderer.h"
-
+#include "spdlog/spdlog.h"
 
 namespace WestEngine
 {
-	void Renderer::Render(const Camera* camera)
+
+	void Renderer::Render(const Camera& camera)
 	{
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT); // also clear the depth buffer now!
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT); 
 
-		for (auto iter = materialPair.begin(); iter != materialPair.end(); iter++)
+		for (char i = 0; i < materialCount; i++)
 		{
-			iter->first->shader->Bind();
-			iter->first->UploadAllProperties();
+			auto pair = materialPair[i];
+			pair.material->shader->Bind();
+			pair.material->UploadAllProperties();
+			
+			pair.material->shader->setMat4("projection", camera.GetProjectionMatrix());
+			pair.material->shader->setMat4("view", camera.GetViewMatrix());
+			pair.material->shader->setVec3("viewPos", camera.Position);
 
-			for (auto iter1 = iter->second.begin(); iter1 != iter->second.end(); iter1++)
+			for (unsigned short j = 0; j < pair.indexCount; j++)
 			{
-				(*iter1)->OnRender(true);
+				renderers[pair.indexes[j]]->OnRender(false);
 			}
 		}
 
-		glUseProgram(0);
+		Shader::Unbind();
 	}
+
 
 	void Renderer::AddMeshRenderer(MeshRenderer* renderer, Material* material)
 	{
-		renderers.push_back(renderer);
-
-		if (materialPair.find(material) == materialPair.end()) // not finded
+		short rendererindex = GetRendererIndex(renderer);
+	
+		if (rendererindex == -1)
 		{
-			auto list = std::list<MeshRenderer*>();
-			list.push_back(renderer);
-			materialPair.insert({ material , list});
+			materialPair[materialCount].AddIndex(rendererCount);
+			materialPair[materialCount++].material = material;
+			renderers[rendererCount++] = renderer;
+			spdlog::error("material added");
 		}
 		else
 		{
-			materialPair[material].push_back(renderer);
+			materialPair[material->index].AddIndex(rendererindex);
 		}
 	}
 
+	void Renderer::ClearRenderers()
+	{
+		memset(renderers, 0, sizeof(MeshRenderer*) * rendererCount);
+		rendererCount = 0;
+
+		// remove/detach indexes
+		for (char i = 0; i < materialCount; i++)
+		{
+			memset(materialPair[i].indexes, 0, sizeof(unsigned short) * materialPair[i].indexCount);
+			materialPair[i].indexCount = 0;
+		}
+	}
+
+	/// <summary> removes and destroys the mesh renderer
+	/// this will be used for editor only most of the time </summary>
+	void Renderer::RemoveMeshRenderer(const MeshRenderer* renderer)
+	{
+		short removedIndex = GetRendererIndex(renderer);
+		
+		if (removedIndex == -1)
+		{
+			spdlog::error("tryin remove meshrenderer but it is not exist!");
+			return;
+		}
+
+		rendererCount--;
+		
+		renderers[removedIndex]->~MeshRenderer();
+		
+		delete renderers[removedIndex]; // delete the mesh renderer
+
+		renderers[rendererCount] = nullptr; // dangling pointer thing
+		renderers[removedIndex] = renderers[rendererCount]; // move last member to removed position
+	
+		// unregister meshrenderer from material
+		for (char i = 0; i < materialCount; i++)
+		{
+			for (short j = 0; j < materialPair[i].indexCount; j++)
+			{
+				if (materialPair[i].indexes[j] == removedIndex)
+				{
+					materialPair[i].RemoveAt(j);
+					break;
+				}
+			}
+		}
+
+		// register moved renderer again
+		for (char i = 0; i < materialCount; i++)
+		{
+			for (short j = 0; j < materialPair[i].indexCount; j++)
+			{
+				if (materialPair[i].indexes[j] == rendererCount)
+				{
+					materialPair[i].AddIndex(removedIndex);
+					break;
+				}
+			}
+		}
+	}
+
+	short Renderer::GetRendererIndex(const MeshRenderer* renderer)
+	{
+		short rendererindex = -1;
+
+		for (short i = 0; i < rendererCount; i++)
+		{
+			if (renderer == renderers[i])
+			{
+				return rendererindex = i;
+			}
+		}
+
+		return rendererindex;
+	}
 }

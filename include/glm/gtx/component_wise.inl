@@ -2,6 +2,9 @@
 
 #include <limits>
 
+#undef max
+#undef min
+
 namespace glm{
 namespace detail
 {

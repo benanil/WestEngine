@@ -1,6 +1,6 @@
 #pragma once
 #include "Common.h"
-#include "Renderer.h"
+
 
 namespace WestEngine
 {
@@ -10,7 +10,6 @@ namespace WestEngine
 		static float sunAngle;
 		static int WindowWidth;
 		static int WindowHeight;
-		static ShaderProperties properties;
 
 		static Eventi OnFocus;
 		static Event OnUpdate;

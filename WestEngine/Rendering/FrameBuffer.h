@@ -1,16 +1,15 @@
 #pragma once
-#include "glad.h"
 #include "Common.h"
 
 namespace WestEngine
 {
 	class FrameBuffer
 	{
-		uint handle;
-		uint depthHandle;
+		unsigned int handle;
+		unsigned int depthHandle;
 		void Dispose();
 	public:
-		uint texture;
+		unsigned int texture;
 		int width; int height;
 		
 		FrameBuffer(const int& width, const int& height);

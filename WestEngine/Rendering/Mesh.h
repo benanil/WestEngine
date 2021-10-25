@@ -2,7 +2,6 @@
 #pragma once
 
 #include "Common.h"
-#include "glad.h"
 #include "assimp/vector2.h"
 #include "assimp/vector3.h"
 
@@ -11,8 +10,8 @@
 #include <assimp/postprocess.h> 
 
 #include <iostream>
-#include <vector>
 #include <Box.h>
+#include <memory>
 
 namespace WestEngine
 {
@@ -24,22 +23,12 @@ namespace WestEngine
 		aiVector3D tangent;
 	};
 
-	struct ShaderProperties
-	{
-		float roughness;
-		float metalic;
-		float specValue = 1;
-		glm::vec3 sunColor = {1,1,1};
-		glm::vec3 ambientColor = { 1,1,1 };
-		float ambientStrength = .15f;
-	};
-
 	class Mesh
 	{
 	public:
 		Vertex* vertices;
-		std::string path;
-		std::string name;
+		const char* path;
+		const char* name;
 		Math::Box3 area;
 
 		unsigned int* indices;
@@ -53,9 +42,9 @@ namespace WestEngine
 			Invalidate();
 		}
 
-		Mesh(const aiMesh& aimesh, const string& path, const string& name);
+		Mesh(const aiMesh* aimesh, const std::string& path);
 
-		string GetIdentifier() { return path + ':' + name; }
+		char* GetIdentifier();
 
 		void Invalidate();
 		void Draw()	const;
@@ -65,7 +54,7 @@ namespace WestEngine
 	class MeshLoader
 	{
 	public:
-		static Mesh* Load(const std::string& path, int&  meshCount);
+		static Mesh* Load(const std::string& path, unsigned short& meshCount);
 	};
 }
 

@@ -1,13 +1,15 @@
 #include "WestEngine.h"
 #include <iostream>
 #include "GLFW/glfw3.h"
-#include "glad.h"
-#include "glm/glm.hpp"
 #include "imgui/imgui.h"
-#include <vector>
 #include "Scene.h"
-#include "ECS.h"
+#include "Entity.h"
 #include "AssetManager.h"
+
+#include "Renderer.h"
+#include "Camera.h"
+#include "Editor/Editor.h"
+#include "spdlog/spdlog.h"
 
 namespace WestEngine
 {
@@ -39,6 +41,7 @@ namespace WestEngine
             std::cout << "Failed to create GLFW window" << std::endl;
             glfwTerminate();
         }
+
         glfwMakeContextCurrent(window);
         glfwSwapInterval(1);
 
@@ -59,23 +62,23 @@ namespace WestEngine
         SceneManager::AddScene(new Scene());
         SceneManager::LoadScene(0);
 
-        const Shader* ourShader = AssetManager::GetShader("First.vert", "First.frag");
-        ourShader->Bind();
+        Shader* ourShader = new Shader("First.vert", "First.frag");
+
         glm::mat4 model(1.0f);
         model = glm::rotate(model, -1.57f, glm::vec3(1.0f, 0.0f, 0.0f));
-        ourShader->setMat4("model", model);
 
-        Texture texture(true, "map_Base_Colorenyeni.png");
-        
-        int meshCount = 0;
-        Mesh* mesh = MeshLoader::Load(Helper::AssetsPath().append("map.fbx").u8string(), meshCount);
-        
+        unsigned short meshCount = 0;
+        Texture* texture = AssetManager::GetTexture("Textures/map_Base_Colorenyeni.png", true);
+        Mesh* mesh = AssetManager::GetMeshBase("Models/map.fbx", meshCount);
         Material* material = new Material(ourShader, texture);
+        Entity* firstEntity = new Entity("First Entity");
 
-        auto firstEntity = std::make_shared<Entity>(new Entity("First Entity"));
         firstEntity->AddCompanent(new MeshRenderer(firstEntity, mesh, meshCount, material, true));
+        firstEntity->transform->SetMatrix(model, true);
         
-        Camera* SceneCamera = new Camera(glm::vec3(0,0,0));
+        Scene::SetCurrentEntity(firstEntity);
+
+        Camera SceneCamera(glm::vec3(0,0,0));
 
         float currentTime = 0, lastTime = 0;
 
@@ -93,14 +96,16 @@ namespace WestEngine
 
             MainInput(window);
 
-            SceneCamera->Update();
+            SceneCamera.Update();
 
             OnUpdate.Invoke();
             SceneManager::Update();
            
             // render
-            Renderer::Render(SceneCamera);
+            Renderer::Get().Render(SceneCamera);
            
+            SettingsWindow::DrawWindow(SceneCamera);
+
             Editor::Render();
 
             glfwSwapBuffers(window);

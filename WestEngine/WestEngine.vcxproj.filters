@@ -66,9 +66,6 @@
     <ClInclude Include="Entity Companent System\Entity.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Entity Companent System\Companent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Entity Companent System\Transform.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -85,6 +82,21 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Data\Box.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Entity Companent System\Entity.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\Math.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Entity Companent System\Component.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="External\stb_image.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="External\stb_image_resize.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -128,7 +140,7 @@
     <ClCompile Include="Main\Helper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Entity Companent System\Entity.cpp">
+    <ClCompile Include="Entity Companent System\ECS.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Entity Companent System\Transform.cpp">
@@ -150,6 +162,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Editor\GUI.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Data\Math.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Editor\SettingsWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Rendering\Camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
