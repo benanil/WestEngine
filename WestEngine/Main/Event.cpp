@@ -25,15 +25,19 @@ void Action3f::Invoke(const float& x, const float& y, const float& z) const  {
 	for (Changed3f act : actions) act(x, y, z); 
 }
 
-void Action2i::Invoke(const glm::ivec2& pos) const {
+void Action2i::Invoke(const 
+	
+	
+	
+	ivec2& pos) const {
 	for (Changed2i act : actions) act(pos.x, pos.y);
 }
 
-void Action2f::Invoke(const glm::vec2& pos) const {
+void Action2f::Invoke(const Math::vec2& pos) const {
 	for (Changed2f act : actions) act(pos.x, pos.y);
 }
 
-void Action3f::Invoke(const glm::vec3& pos) const {
+void Action3f::Invoke(const Math::vec3& pos) const {
 	for (Changed3f act : actions) act(pos.x, pos.y, pos.z);
 }
 

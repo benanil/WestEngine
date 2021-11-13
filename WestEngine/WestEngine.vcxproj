@@ -80,14 +80,14 @@
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)\bin\$(Configuration)\SandBox\</OutDir>
     <IntDir>$(SolutionDir)\bin-int\$(Configuration)\$(ProjectName)\</IntDir>
-    <IncludePath>$(SolutionDir)\WestEngine\Data;$(SolutionDir)\WestEngine\Main;$(SolutionDir)\WestEngine\Rendering;$(SolutionDir)\WestEngine\Editor;$(SolutionDir)\WestEngine\Entity Companent System;$(SolutionDir)\WestEngine;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)\WestEngine\Data;$(SolutionDir)\WestEngine\Main;$(SolutionDir)\WestEngine\Rendering;$(SolutionDir)\WestEngine\Editor;$(SolutionDir)\WestEngine\Entity Companent System;$(SolutionDir)\WestEngine\External;$(SolutionDir)\WestEngine;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)\libs;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)\bin\$(Configuration)\SandBox\</OutDir>
     <IntDir>$(SolutionDir)\bin-int\$(Configuration)\$(ProjectName)\</IntDir>
-    <IncludePath>$(SolutionDir)\WestEngine\Data;$(SolutionDir)\WestEngine\Main;$(SolutionDir)\WestEngine\Rendering;$(SolutionDir)\WestEngine\Editor;$(SolutionDir)\WestEngine\Entity Companent System;$(SolutionDir)\WestEngine;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)\WestEngine\Data;$(SolutionDir)\WestEngine\Main;$(SolutionDir)\WestEngine\Rendering;$(SolutionDir)\WestEngine\Editor;$(SolutionDir)\WestEngine\Entity Companent System;$(SolutionDir)\WestEngine\External;$(SolutionDir)\WestEngine;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)\libs;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -122,10 +122,10 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;GLM_ARCH_SSE2_BIT;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
@@ -140,10 +140,10 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;GLM_ARCH_SSE2_BIT;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
@@ -155,6 +155,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Data\quat.h" />
+    <ClInclude Include="Data\SSE2_Math\ivec4.h" />
+    <ClInclude Include="Data\SSE2_Math\mat4.h" />
+    <ClInclude Include="Data\SSE2_Math\swizzle2.h" />
+    <ClInclude Include="Data\SSE2_Math\swizzle4.h" />
+    <ClInclude Include="Data\vec3.h" />
+    <ClInclude Include="Data\SSE2_Math\vec4.h" />
+    <ClInclude Include="Rendering\ComputeShader.h" />
     <ClInclude Include="Data\Box.h" />
     <ClInclude Include="Data\Math.h" />
     <ClInclude Include="Entity Companent System\Entity.h" />
@@ -184,6 +192,8 @@
     <ClInclude Include="WestEngine.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Data\vec2.h" />
+    <ClCompile Include="Rendering\ComputeShader.cpp" />
     <ClCompile Include="Editor\GUI.cpp" />
     <ClCompile Include="Editor\SettingsWindow.cpp" />
     <ClCompile Include="Main\AssetManager.cpp" />
@@ -217,6 +227,8 @@
     <None Include="..\Assets\PostProcessing.glsl" />
     <None Include="cpp.hint" />
     <None Include="Main\cpp.hint" />
+    <None Include="Screen.frag" />
+    <None Include="Screen.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

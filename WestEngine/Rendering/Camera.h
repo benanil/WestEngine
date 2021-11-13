@@ -25,11 +25,14 @@ namespace WestEngine
         POINT oldPos;
     public:
         // camera Attributes
-        glm::vec3 Position;
-        glm::vec3 Front;
-        glm::vec3 Up;
-        glm::vec3 Right;
-        glm::vec3 WorldUp;
+        
+        
+        
+        vec3 Position;
+        Math::vec3 Front;
+        Math::vec3 Up;
+        Math::vec3 Right;
+        Math::vec3 WorldUp;
         // euler Angles
         float Yaw;
         float Pitch;
@@ -39,19 +42,19 @@ namespace WestEngine
         float Zoom;
     
         // constructor with vectors
-        Camera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), 
-               glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f),
+        Camera(Math::vec3 position = Math::vec3(0.0f, 0.0f, 0.0f), 
+               Math::vec3 up = Math::vec3(0.0f, 1.0f, 0.0f),
                float yaw = YAW, float pitch = PITCH);
     
         // returns the view matrix calculated using Euler Angles and the LookAt Matrix
-        glm::mat4 GetViewMatrix() const
+        Math::mat4 GetViewMatrix() const
         {
-            return glm::lookAt(Position, Position + Front, Up);
+            return Math::lookAt(Position, Position + Front, Up);
         }
 
-        glm::mat4 GetProjectionMatrix() const
+        Math::mat4 GetProjectionMatrix() const
         {
-            return glm::perspective(glm::radians(90.0f), (float)Engine::WindowWidth / (float)Engine::WindowHeight, 0.1f, 5000.0f);
+            return Math::perspective(Math::radians(90.0f), (float)Engine::WindowWidth / (float)Engine::WindowHeight, 0.1f, 5000.0f);
         }
     
         // processes input received from any keyboard-like input system. Accepts input parameter in the form of camera defined ENUM (to abstract it from windowing systems)

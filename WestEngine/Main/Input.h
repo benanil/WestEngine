@@ -1,6 +1,6 @@
 #pragma once
 #include "GLFW/glfw3.h"
-#include "glm/glm.hpp"
+#include "Math.h"
 
 #include <Windows.h>
 #include <WinUser.h>
@@ -9,7 +9,10 @@ namespace WestEngine
 {
 	class Input
 	{
-		static glm::vec2 _MousePosition;
+		static 
+			
+			
+			vec2 _MousePosition;
 		static GLFWwindow* window;
 		static void _SetCursorPos(const int& x, const int& y);
 	public:
@@ -23,6 +26,6 @@ namespace WestEngine
 		static void InfiniteMouse();
 		/// <returns>mouse position that is not relative to glfw</returns>
 		static const POINT& GeMouseRaw();
-		static const glm::vec2& MousePos();
+		static const Math::vec2& MousePos();
 	};
 }

@@ -4,7 +4,10 @@
 
 namespace WestEngine
 {
-	glm::vec2 Input::_MousePosition = glm::vec2(0.0f, 0.0f);
+	
+	
+	
+	vec2 Input::_MousePosition = Math::vec2(0.0f, 0.0f);
 	static float lastX = 0, lastY = 0;
 
 	GLFWwindow* Input::window = NULL;
@@ -50,7 +53,7 @@ namespace WestEngine
 	{
 		POINT point;
 		GetCursorPos(&point);
-		const glm::vec2 monitorScale = Device::GetMonitorScale();
+		const Math::vec2 monitorScale = Device::GetMonitorScale();
 
 		if (point.x > monitorScale.x - 2) { _SetCursorPos(2, point.y); }
 		if (point.y > monitorScale.y - 2) { _SetCursorPos(point.x, 2); }
@@ -70,6 +73,6 @@ namespace WestEngine
 		return point;
 	}
 
-	const glm::vec2& Input::MousePos() { return _MousePosition; }
+	const Math::vec2& Input::MousePos() { return _MousePosition; }
 }
 

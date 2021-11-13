@@ -101,8 +101,11 @@ namespace WestEngine
 
 	Math::Box3 Mesh::CalculateArea()
 	{
-		glm::vec3 min = glm::vec3(Math::minf, Math::minf, Math::minf);
-		glm::vec3 max = glm::vec3(Math::maxf, Math::maxf, Math::maxf);
+		
+		
+		
+		vec3 min = Math::vec3(Math::minf, Math::minf, Math::minf);
+		Math::vec3 max = Math::vec3(Math::maxf, Math::maxf, Math::maxf);
 
 		for (unsigned int i = 0; i < vertexCount; i++)  {
 			if (vertices[i].position.x > max.x) max.x = vertices[i].position.x;

@@ -30,7 +30,7 @@ namespace WestEngine
 		DropUIElementString("Texture", callback);
 	}
 	
-	bool GUI::ImageButton(const unsigned int texture, const float& size)
+	bool GUI::ImageButton(const unsigned int& texture, const float& size)
 	{
 		return ImGui::ImageButton((void*)texture, { size , size }, { 1, 0 }, { 0, 1 });
 	}
@@ -98,7 +98,6 @@ namespace WestEngine
 				if (payloadPtr->Data)
 				{
 					callback((char*)payloadPtr->Data);
-					std::cout << "dropped" << (char*)payloadPtr->Data << std::endl;
 				}
 			}
 		}

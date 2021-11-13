@@ -26,6 +26,7 @@ namespace WestEngine
 	class Editor
 	{
 	public:
+		
 		static void Create(GLFWwindow* window);
 		static void AddOnEditor(const Action& action);
 		static void Begin();
@@ -41,7 +42,7 @@ namespace WestEngine
 		static void Header(const char* title);
 		static void TextureField(const char* name, WestEngine::Texture** texture);
 		static void TextureField(const char* name, const int& texture);
-		static bool ImageButton(const unsigned int texture, const float& size = filesize);
+		static bool ImageButton(const unsigned int& texture, const float& size = filesize);
 
 		static void EnumField(int& value, const char** names, const int& count, const char* label,
 							  const Action& onSellect = NULL, const ImGuiComboFlags& flags = 0);
@@ -63,6 +64,7 @@ namespace WestEngine
 		// static Texture* folderIcon;
 		// static Texture* meshIcon;
 	public:
+		static std::filesystem::path currentPath;
 		static void Initialize();
 		static void DrawWindow();
 	};
@@ -70,6 +72,7 @@ namespace WestEngine
 	class SettingsWindow
 	{
 	public:
+
 		static void DrawWindow(Camera& camera);
 	};
 }

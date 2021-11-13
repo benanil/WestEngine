@@ -5,7 +5,10 @@
 namespace WestEngine {
     
     /// primary monitor size
-    static glm::vec2 MonitorScale = glm::vec2(0,0);
+    static 
+        
+        
+        vec2 MonitorScale = Math::vec2(0,0);
 
     void Device::Create() {
         const GLFWvidmode* vidMode = glfwGetVideoMode(glfwGetPrimaryMonitor());
@@ -17,7 +20,7 @@ namespace WestEngine {
     /// <summary>
     /// Gets Primary Window Scame
     /// </summary>
-    const glm::vec2& Device::GetMonitorScale()
+    const Math::vec2& Device::GetMonitorScale()
     {
         return MonitorScale;
     }

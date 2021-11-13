@@ -8,6 +8,8 @@
 
 namespace WestEngine
 {
+	#pragma region Scene
+
 	Scene::~Scene() {
 		RETURNIF(disposed == true);
 		disposed = true;
@@ -119,6 +121,9 @@ namespace WestEngine
 		entities[entityCount] = nullptr; 
 	}
 
+	#pragma endregion
+
+	#pragma region SceneManager
 	// SCENE MANAGER 
 	
 	void SceneManager::_Update()
@@ -129,23 +134,15 @@ namespace WestEngine
 		}
 	}
 
-	Scene* SceneManager::GetActiveScene() { return Get().CurrentScene; }
-	
-	void SceneManager::DeleteScene(const char* name) { Get()._DeleteScene(name); }
-
 	void SceneManager::_DeleteScene(const char* name) {
 		unsigned char index = 0;
 		for (; index < sceneCount; index++) {
 			if (scenes[index]->name == name) break;
 		}
 		Renderer::Get().ClearRenderers(); // removes all of the meshes from renderer queue
-		DeleteScene(index);
+		_DeleteScene(index);
 	}
 	
-	void SceneManager::DeleteScene(const unsigned char& index) {
-		Get()._DeleteScene(index);
-	}
-
 	void SceneManager::_DeleteScene(const unsigned char& index) {
 		RETURNIF(sceneCount == 0); // we need at least 1 scene
 		// delete scene
@@ -159,27 +156,15 @@ namespace WestEngine
 		scenes[sceneCount] = nullptr;
 	}
 
-	void SceneManager::AddScene(Scene* scene) {
-		Get()._AddScene(scene);
-	}
-	
 	void SceneManager::_AddScene(Scene* scene) {
 		scene->index = sceneCount;
 		scenes[sceneCount++] = scene;
-	}
-
-	void SceneManager::LoadScene(const unsigned char& index) {
-		Get()._LoadScene(index);
 	}
 	
 	void SceneManager::_LoadScene(const unsigned char& index) {
 		if (CurrentScene)CurrentScene->Destroy();
 		CurrentScene = scenes[index];
 		scenes[index]->Load();
-	}
-
-	void SceneManager::LoadScene(std::string_view name) {
-		Get()._LoadScene(name);
 	}
 
 	void SceneManager::_LoadScene(std::string_view name) {
@@ -193,6 +178,8 @@ namespace WestEngine
 			}
 		}
 	}
+
+	#pragma endregion
 
 	// SAVE LOAD
 	void SceneSaver::Save(std::string_view path) {

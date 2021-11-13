@@ -3,31 +3,42 @@
 #include <filesystem>
 #include "AssetManager.h"
 #include "spdlog/spdlog.h"
+#include <vector>
+#include <string>
 
 namespace WestEngine
 {
-	void Click();
+	void Click(const char*);
 
 	void ResourcesWindow::Initialize()
 	{
 	
 	}
+	
+	std::filesystem::path ResourcesWindow::currentPath = Helper::AssetsPath();
 
 	void ResourcesWindow::DrawWindow()
 	{
 		static unsigned int fileIcon   = Texture::CreateIcon("file.png");
 		static unsigned int folderIcon = Texture::CreateIcon("folder.png");
 		static unsigned int meshIcon   = Texture::CreateIcon("mesh.png");
-		
+		static unsigned int fileBack   = Texture::CreateIcon("fileBack.png");
+
 		ImGui::Begin("Resources");
 		
+		if (GUI::ImageButton(fileBack, miniSize))
+		{
+			currentPath = currentPath.parent_path();
+		}
+
 		// todo: make path static & add oppen close folders & back button & dragg and drop
-		auto path = Helper::AssetsPath();
 		int id = 0; // for imgui push id
 
 		ImGui::Separator();
 		
-		for (auto& directory : std::filesystem::directory_iterator(path))
+#undef min
+
+		for (auto& directory : std::filesystem::directory_iterator(currentPath))
 		{
 			std::string fileName = directory.path().filename().u8string();
 
@@ -38,9 +49,19 @@ namespace WestEngine
 				if (GUI::ImageButton(folderIcon))
 				{
 					spdlog::info("clicked {0}", fileName);
+					currentPath = directory;
 				}
-				ImGui::TextWrapped(fileName.c_str());
+				ImGui::TextWrapped(fileName.substr(0, 
+					
+					
+					min<int>(10, fileName.length())).c_str());
+				
+				char num_char[5 + sizeof(char)];
+				const int width = ImGui::GetColumnWidth();
+				std::sprintf(num_char, "%i", width);
+				
 				ImGui::EndGroup();
+
 				if (ImGui::IsItemHovered())
 				{
 					ImGui::BeginTooltip();
@@ -49,24 +70,44 @@ namespace WestEngine
 				}
 				
 				ImGui::PopID();
+				
+				if (width > filesize * 3) 
+				ImGui::SameLine();
 			}
-
-			ImGui::SameLine();
 		}
 
-		for (auto& directory : std::filesystem::directory_iterator(path))
+		for (auto& directory : std::filesystem::directory_iterator(currentPath))
 		{
 			std::string fileName = directory.path().filename().u8string();
 
 			if (!directory.is_directory()) {
 				ImGui::PushID(id++);
 
+				unsigned int icon = fileIcon;
+
+				std::string extension = directory.path().extension().u8string();
+
+				static const std::string meshExtensions[]
+				{
+					".blend", ".fbx", "obj"
+				};
+
+				if (Helper::Contains(extension, meshExtensions , 3)) icon = meshIcon;
+
 				ImGui::BeginGroup();
-				if (GUI::ImageButton(fileIcon)) {
-					spdlog::info("clicked {0}", fileName);
+				if (GUI::ImageButton(icon)) {
+					spdlog::info("clicked {0}", icon);
 				}
-				ImGui::TextWrapped(fileName.c_str());
+				
+				ImGui::TextWrapped(fileName.substr(0, Math::min<int>(10, fileName.length())).c_str());
+
+				char num_char[5 + sizeof(char)];
+				const int width = (int)ImGui::GetColumnWidth();
+				std::sprintf(num_char, "%i", width);
+				
 				ImGui::EndGroup();
+				
+				GUI::DragUIElementString(fileName.c_str(), extension.c_str(),  icon);
 
 				if (ImGui::IsItemHovered())
 				{
@@ -76,15 +117,17 @@ namespace WestEngine
 				}
 
 				ImGui::PopID();
+				if (width > filesize * 3)
+				ImGui::SameLine();
 			}
-			ImGui::SameLine();
 		}
 
 		ImGui::End();
 	}
 
-	void Click()
+
+	void Click(const char* call)
 	{
-		std::cout << "right click pressed !" << std::endl;
+		std::cout << "dropped " << call << std::endl;
 	}
 }

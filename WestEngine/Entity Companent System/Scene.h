@@ -46,14 +46,14 @@ namespace WestEngine
 		void _LoadScene(std::string_view name);
 		void _Update();
 	public:
-		static void Update()  { Get()._Update(); }
-		static Scene* GetActiveScene();
-		static void DeleteScene(const unsigned char& index);
-		static void DeleteScene(const char* name);
-		static void AddScene(Scene* scene);
-		static void LoadScene(const unsigned char& index);
-		static void LoadScene(std::string_view name);
-		static const unsigned char SceneCount() { return Get().sceneCount; };
+		static void Update()								{ Get()._Update();           } // singleton look shity in here
+		static Scene* GetActiveScene()						{ return Get().CurrentScene; }
+		static void DeleteScene(const unsigned char& index) { Get()._DeleteScene(index); }
+		static void DeleteScene(const char* name)			{ Get()._DeleteScene(name);  }
+		static void AddScene(Scene* scene)					{ Get()._AddScene(scene);    }
+		static void LoadScene(const unsigned char& index)	{ Get()._LoadScene(index);   }
+		static void LoadScene(std::string_view name)		{ Get()._LoadScene(name);    }
+		static const unsigned char SceneCount()				{ return Get().sceneCount;   }
 		
 		static SceneManager& Get()
 		{

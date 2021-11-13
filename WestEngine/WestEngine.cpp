@@ -31,6 +31,7 @@ namespace WestEngine
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 4);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+        // glfwWindowHint(GLFW_TRANSPARENT_FRAMEBUFFER, 1);
 
 #ifdef __APPLE__
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
@@ -58,14 +59,15 @@ namespace WestEngine
         Input::Initialize(window);
         Device::Create();
         Editor::AddOnEditor(MainEditor);
+        Renderer::Initialize();
 
         SceneManager::AddScene(new Scene());
         SceneManager::LoadScene(0);
 
         Shader* ourShader = new Shader("First.vert", "First.frag");
-
-        glm::mat4 model(1.0f);
-        model = glm::rotate(model, -1.57f, glm::vec3(1.0f, 0.0f, 0.0f));
+        
+        Math::mat4 model(1.0f);
+        model = Math::rotate(model, -1.57f, Math::vec3(1.0f, 0.0f, 0.0f));
 
         unsigned short meshCount = 0;
         Texture* texture = AssetManager::GetTexture("Textures/map_Base_Colorenyeni.png", true);
@@ -78,7 +80,7 @@ namespace WestEngine
         
         Scene::SetCurrentEntity(firstEntity);
 
-        Camera SceneCamera(glm::vec3(0,0,0));
+        Camera SceneCamera(Math::vec3(0,0,0));
 
         float currentTime = 0, lastTime = 0;
 
@@ -140,6 +142,7 @@ namespace WestEngine
 		Engine::WindowWidth = width;
 		Engine::WindowHeight = height;
 		glViewport(0, 0, width, height);
+        Renderer::Invalidate(&width, &height);
 	}
 }
 

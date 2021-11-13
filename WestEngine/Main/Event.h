@@ -1,7 +1,7 @@
 #pragma once
 #include <iostream>
 #include <vector>
-#include "glm/glm.hpp"
+#include "Math.h"
 #include "glm/matrix.hpp"
 #include "glm/mat4x4.hpp"
 
@@ -67,8 +67,13 @@ private:
 public:
 	void Add(const Changed2i& func);
 	void Invoke(const int& x, const int& y) const;
-	void Invoke(const glm::ivec2& pos) const;
-	void operator()(const glm::ivec2& pos) { Invoke(pos); }
+	void Invoke(const 
+		
+		
+		
+		
+		ivec2& pos) const;
+	void operator()(const Math::ivec2& pos) { Invoke(pos); }
 	void operator()(const int& x, const int& y) const { Invoke(x, y); };
 };
 
@@ -79,8 +84,8 @@ private:
 public:
 	void Add(const Changed2f& func);
 	void Invoke(const float& x, const float& y) const;
-	void Invoke(const glm::vec2& pos) const;
-	void operator()(const glm::vec2& pos) { Invoke(pos); }
+	void Invoke(const Math::vec2& pos) const;
+	void operator()(const Math::vec2& pos) { Invoke(pos); }
 	void operator()(const float& x, const float& y) const { Invoke(x, y); };
 };
 
@@ -91,8 +96,8 @@ private:
 public:
 	void Add(const Changed3f& func);
 	void Invoke(const float& x, const float& y, const float& z) const;
-	void Invoke(const glm::vec3& pos) const;
-	void operator()(const glm::vec3& pos) { Invoke(pos); }
+	void Invoke(const Math::vec3& pos) const;
+	void operator()(const Math::vec3& pos) { Invoke(pos); }
 	void operator()(const float& x, const float& y, const float& z) const { Invoke(x, y, z); };
 };
 

@@ -1,6 +1,6 @@
 #pragma once
 #include "GLFW/glfw3.h"
-#include "glm/glm.hpp"
+#include "Math.h"
 
 namespace WestEngine
 {
@@ -12,7 +12,9 @@ namespace WestEngine
 		/// Get Monitors Size by pixel
 		/// </summary>
 		/// <param name="index">monitor index</param>
-		static const glm::vec2& GetMonitorScale();
+		static const 
+			
+		Math::vec2& GetMonitorScale();
 	};
 }
 

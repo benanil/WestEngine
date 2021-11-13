@@ -58,6 +58,9 @@ namespace WestEngine
 	};
 
 	class MeshRenderer;
+	class ComputeShader;
+	class FrameBuffer;
+	
 	class Renderer
 	{
 		MeshRenderer* renderers[2048];
@@ -65,14 +68,17 @@ namespace WestEngine
 		/// <summary> mesh indexes and materials </summary>
 		MaterialPair materialPair[32];
 		int materialCount;
+		static ComputeShader* PostCompute;
+		static FrameBuffer* PostFrameBuffer;
 
 		inline short GetRendererIndex(const MeshRenderer* renderer);
 	public:
 		void AddMeshRenderer(MeshRenderer* renderer, Material* material);
 		void Render(const Camera& camera);
 		void RemoveMeshRenderer(const MeshRenderer* renderer);
-		/// <summary> 
-		/// dispose all of the mesh renderers
+		static void Initialize();
+		static void Invalidate(const int* width, const int* height);
+		/// <summary> dispose all of the mesh renderers
 		/// use it when scene cleared</summary>
 	    void ClearRenderers();
 

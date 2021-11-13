@@ -3,13 +3,14 @@
 #define GLM_FORCE_DEFAULT_ALIGNED_GENTYPES
 // #define GLM_FORCE_SIMD_AVX2
 #define GLM_FORCE_SSE2
+#define GLM_FORCE_INLINE 
 
 #include "Time.h"
 #include "Event.h"
 #include "glad.h"
 #include <Input.h>
 #include <Device.h>
-#include "glm/glm.hpp"
+#include "Math.h"
 #include "Event.h"
 #include "Helper.h"
 #include <iostream>

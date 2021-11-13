@@ -1,14 +1,29 @@
 #include "Common.h"
 #include "Renderer.h"
 #include "spdlog/spdlog.h"
+#include "ComputeShader.h"
+#include "FrameBuffer.h"
 
 namespace WestEngine
 {
+	ComputeShader* Renderer::PostCompute = NULL; 
+	FrameBuffer* Renderer::PostFrameBuffer = NULL; 
+
+	void Renderer::Initialize()
+	{
+		PostCompute = new ComputeShader("PostProcessing.glsl");
+		PostFrameBuffer = new FrameBuffer(1440, 900);
+	}
 
 	void Renderer::Render(const Camera& camera)
 	{
-        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+		const static Shader* screen = new Shader("Screen.vert", "Screen.frag");
+
+		glClearColor(0.48f, 0.78f, 0.88f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT); 
+
+		glEnable(GL_DEPTH_TEST);
+		// PostFrameBuffer->Bind();
 
 		for (char i = 0; i < materialCount; i++)
 		{
@@ -17,8 +32,8 @@ namespace WestEngine
 			pair.material->UploadAllProperties();
 			
 			pair.material->shader->setMat4("projection", camera.GetProjectionMatrix());
-			pair.material->shader->setMat4("view", camera.GetViewMatrix());
-			pair.material->shader->setVec3("viewPos", camera.Position);
+			pair.material->shader->setMat4("view"      , camera.GetViewMatrix());
+			pair.material->shader->setVec3("viewPos"   , camera.Position);
 
 			for (unsigned short j = 0; j < pair.indexCount; j++)
 			{
@@ -26,9 +41,30 @@ namespace WestEngine
 			}
 		}
 
+		// FrameBuffer::UnBind();
+		// 
+		// glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+		// 
+		// PostCompute->Bind();
+		// 
+		// glBindImageTexture(1, PostFrameBuffer->GetTexture(), 0, false, 0, GL_READ_ONLY, GL_RGBA16F);
+		// PostCompute->Dispatch();
+		// 
+		// glDisable(GL_DEPTH_TEST);
+		// screen->Bind();
+		// 
+		// glActiveTexture(GL_TEXTURE0);
+		// glBindTexture(GL_TEXTURE_2D, PostCompute->GetTexture());
+		// glDrawArrays(GL_TRIANGLES, 0, 3);
+		// glBindTexture(GL_TEXTURE_2D, 0);
 		Shader::Unbind();
 	}
 
+	void Renderer::Invalidate(const int* width, const int* height)
+	{
+		PostCompute->Invalidate(width, height);
+		PostFrameBuffer->Invalidate(width, height);
+	}
 
 	void Renderer::AddMeshRenderer(MeshRenderer* renderer, Material* material)
 	{
@@ -39,7 +75,6 @@ namespace WestEngine
 			materialPair[materialCount].AddIndex(rendererCount);
 			materialPair[materialCount++].material = material;
 			renderers[rendererCount++] = renderer;
-			spdlog::error("material added");
 		}
 		else
 		{
