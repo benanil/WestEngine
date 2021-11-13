@@ -19,7 +19,7 @@ namespace WestEngine
 		int channels;
 		data = stbi_load(path, &width, &height, &channels, 0);
 		if (data == nullptr) spdlog::error("Texture Creation Failed!");
-		// if we are generating texture for low performance devides we can downsample our image here
+		// if we are generating texture for low performance devices we can downsample our image here
 
 		GLint ChannelType = GL_GREEN + channels; // channel 3 = GL_RGB, channel 4 = GL_RGBA
 		// create opengl texture for icon
